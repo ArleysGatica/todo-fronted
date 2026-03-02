@@ -1,0 +1,129 @@
+<div class="register-container">
+	<div class="register-card">
+		<div class="card-header">
+			<div class="logo-circle">
+				<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="white" stroke-width="2"
+						stroke-linecap="round" stroke-linejoin="round" />
+				</svg>
+			</div>
+			<h1>Crear Cuenta</h1>
+			<p class="subtitle">Regístrate para comenzar a organizar tus tareas</p>
+		</div>
+
+		<form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form" novalidate>
+
+			<!-- Nombre completo -->
+			<div class="form-group"
+				[class.has-error]="registerForm.get('displayName')?.invalid && registerForm.get('displayName')?.touched">
+				<label for="displayName">
+					<span class="label-icon">👤</span> Nombre completo
+				</label>
+				<input type="text" id="displayName" formControlName="displayName" placeholder="Juan García"
+					autocomplete="name" />
+				@if (registerForm.get('displayName')?.errors?.['required'] && registerForm.get('displayName')?.touched)
+				{
+				<p class="error-message">El nombre es obligatorio</p>
+				}
+				@if (registerForm.get('displayName')?.errors?.['minlength'] && registerForm.get('displayName')?.touched)
+				{
+				<p class="error-message">Mínimo 2 caracteres</p>
+				}
+			</div>
+
+			<!-- Email -->
+			<div class="form-group"
+				[class.has-error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+				<label for="email">
+					<span class="label-icon">✉️</span> Correo electrónico
+				</label>
+				<input type="email" id="email" formControlName="email" placeholder="tu@email.com"
+					autocomplete="email" />
+				@if (registerForm.get('email')?.errors?.['required'] && registerForm.get('email')?.touched) {
+				<p class="error-message">El correo es obligatorio</p>
+				}
+				@if (registerForm.get('email')?.errors?.['email'] && registerForm.get('email')?.touched) {
+				<p class="error-message">Ingresa un correo válido</p>
+				}
+			</div>
+
+			<!-- Contraseña -->
+			<div class="form-group"
+				[class.has-error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+				<label for="password">
+					<span class="label-icon">🔒</span> Contraseña
+				</label>
+				<div class="input-wrapper">
+					<input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password"
+						placeholder="••••••••" autocomplete="new-password" />
+					<button type="button" class="toggle-password" (click)="showPassword = !showPassword" tabindex="-1">
+						{{ showPassword ? '🙈' : '👁️' }}
+					</button>
+				</div>
+				@if (registerForm.get('password')?.errors?.['required'] && registerForm.get('password')?.touched) {
+				<p class="error-message">La contraseña es obligatoria</p>
+				}
+				@if (registerForm.get('password')?.errors?.['minlength'] && registerForm.get('password')?.touched) {
+				<p class="error-message">Mínimo 8 caracteres</p>
+				}
+			</div>
+
+			<!-- Confirmar Contraseña -->
+			<div class="form-group"
+				[class.has-error]="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched || registerForm.errors?.['passwordMismatch'] && registerForm.get('confirmPassword')?.touched">
+				<label for="confirmPassword">
+					<span class="label-icon">🔑</span> Confirmar contraseña
+				</label>
+				<input type="password" id="confirmPassword" formControlName="confirmPassword" placeholder="••••••••"
+					autocomplete="new-password" />
+				@if (registerForm.get('confirmPassword')?.errors?.['required'] &&
+				registerForm.get('confirmPassword')?.touched) {
+				<p class="error-message">Debes confirmar tu contraseña</p>
+				}
+				@if (registerForm.errors?.['passwordMismatch'] && registerForm.get('confirmPassword')?.touched) {
+				<p class="error-message">Las contraseñas no coinciden</p>
+				}
+			</div>
+
+			<!-- Indicador de fortaleza de contraseña -->
+			@if (registerForm.get('password')?.value) {
+			<div class="strength-indicator">
+				<div class="strength-bar">
+					<div class="strength-fill" [class]="passwordStrength.class" [style.width]="passwordStrength.width">
+					</div>
+				</div>
+				<span class="strength-label" [class]="passwordStrength.class">{{ passwordStrength.label }}</span>
+			</div>
+			}
+
+			<!-- Error general -->
+			@if (errorMessage) {
+			<div class="error-banner">
+				<span>⚠️</span>
+				<p>{{ errorMessage }}</p>
+			</div>
+			}
+
+			<!-- Mensaje de éxito -->
+			@if (successMessage) {
+			<div class="success-banner">
+				<span>✅</span>
+				<p>{{ successMessage }}</p>
+			</div>
+			}
+
+			<button type="submit" class="register-button" [disabled]="registerForm.invalid || loading"
+				id="btn-register">
+				@if (loading) {
+				<span class="spinner"></span> Creando cuenta...
+				} @else {
+				Crear cuenta
+				}
+			</button>
+		</form>
+
+		<div class="card-footer">
+			<p>¿Ya tienes una cuenta? <a routerLink="/auth/login" class="login-link">Inicia sesión</a></p>
+		</div>
+	</div>
+</div>
